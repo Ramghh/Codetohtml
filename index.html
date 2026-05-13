@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>محرر HTML المتكامل | حفظ تلقائي + تنسيق + فتح ملف + مشاركة</title>
+    <title>محرر HTML المتكامل | تباين محسن في الوضع الفاتح</title>
     <!-- Tailwind CSS v3 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
@@ -18,24 +18,97 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
-    <!-- Screenfull.js لملء الشاشة -->
+    <!-- Screenfull.js -->
     <script src="https://cdn.jsdelivr.net/npm/screenfull@5.2.0/dist/screenfull.min.js"></script>
     <style>
         * { font-family: 'Inter', system-ui, sans-serif; }
         body { transition: background-color 0.25s ease, color 0.2s ease; }
+        /* الوضع المظلم العام */
         body.dark { background-color: #0f172a; color: #e2e8f0; }
         body.dark .bg-white { background-color: #1e293b !important; }
         body.dark .bg-gray-50 { background-color: #0f172a !important; }
         body.dark .border-gray-200 { border-color: #334155 !important; }
         body.dark .text-gray-700 { color: #cbd5e1 !important; }
         body.dark .bg-gray-100 { background-color: #1e293b !important; }
-        body.dark input, body.dark button.secondary { background-color: #334155; color: #f1f5f9; border-color: #475569; }
+        
+        /* تحسين أزرار القوائم في الوضع الفاتح (ضمان وضوح النص) */
+        .btn-menu-light {
+            background-color: #f3f4f6 !important;
+            color: #1f2937 !important;
+            border: 1px solid #e5e7eb !important;
+        }
+        .btn-menu-light:hover {
+            background-color: #e5e7eb !important;
+            color: #111827 !important;
+        }
+        body.dark .btn-menu-light {
+            background-color: #334155 !important;
+            color: #f1f5f9 !important;
+            border-color: #475569 !important;
+        }
+        body.dark .btn-menu-light:hover {
+            background-color: #475569 !important;
+        }
+        
+        /* تحسين شريط الحالة */
+        .status-bar {
+            background-color: #f9fafb;
+            color: #4b5563;
+            border-top-color: #e5e7eb;
+        }
+        body.dark .status-bar {
+            background-color: #1e293b;
+            color: #94a3b8;
+            border-top-color: #334155;
+        }
+        
+        /* تحسين حقل إدخال اسم الملف */
+        #filename {
+            background-color: white;
+            color: #1f2937;
+            border-color: #d1d5db;
+        }
+        body.dark #filename {
+            background-color: #334155;
+            color: #f1f5f9;
+            border-color: #475569;
+        }
+        
+        /* تحسين زر المسح */
+        .btn-clear-light {
+            background-color: #e5e7eb !important;
+            color: #1f2937 !important;
+            border: 1px solid #d1d5db !important;
+        }
+        .btn-clear-light:hover {
+            background-color: #d1d5db !important;
+        }
+        body.dark .btn-clear-light {
+            background-color: #475569 !important;
+            color: #e2e8f0 !important;
+            border-color: #64748b !important;
+        }
+        body.dark .btn-clear-light:hover {
+            background-color: #334155 !important;
+        }
+        
+        /* تحسين الأزرار الثانوية */
+        .btn-secondary {
+            background-color: #f3f4f6;
+            color: #1f2937;
+            border: 1px solid #e5e7eb;
+        }
+        body.dark .btn-secondary {
+            background-color: #334155;
+            color: #e2e8f0;
+            border-color: #475569;
+        }
+        
         #previewFrame { background: white; width: 100%; height: 100%; border: none; border-radius: 12px; }
         .CodeMirror { height: 100%; min-height: 450px; font-size: 14px; border-radius: 16px; font-family: monospace; }
         body.dark .CodeMirror { background-color: #1a1f2e; }
         .btn-icon { transition: all 0.2s; }
         .btn-icon:hover { transform: translateY(-2px); filter: brightness(0.95); }
-        .status-bar { font-size: 12px; }
         .toast { position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 8px 16px; border-radius: 40px; z-index: 100; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
         body.dark .toast { background: #2dd4bf; color: #0f172a; }
     </style>
@@ -51,7 +124,7 @@
                 <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
             </div>
             <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">محرر HTML المتكامل</h1>
-            <span class="hidden md:inline-block text-xs bg-gray-100 px-2 py-1 rounded-full">حفظ تلقائي · تنسيق · فتح ملف · مشاركة</span>
+            <span class="hidden md:inline-block text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">تباين محسن · حفظ تلقائي</span>
         </div>
         <div class="flex gap-2">
             <button id="darkModeToggle" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center">
@@ -63,52 +136,50 @@
 
 <main class="container mx-auto px-4 py-6 max-w-[1600px]">
     <div class="flex flex-col xl:flex-row gap-6">
-        <!-- الجانب الأيسر: محرر + أزرار متقدمة -->
+        <!-- الجانب الأيسر -->
         <div class="flex-1 flex flex-col gap-3 min-w-0">
             <div class="bg-white rounded-2xl shadow-lg border overflow-hidden flex flex-col h-full">
                 <div class="flex flex-wrap items-center justify-between gap-2 px-4 py-2 border-b bg-gray-50/50">
-                    <div class="flex gap-1">
-                        <span class="text-xs font-mono text-gray-500">✏️ محرر HTML</span>
-                    </div>
+                    <span class="text-xs font-mono text-gray-500">✏️ محرر HTML</span>
                     <div class="flex gap-2 flex-wrap">
-                        <button id="formatBtn" class="text-xs bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full hover:bg-indigo-200 transition">✨ تجميل</button>
-                        <button id="uploadBtn" class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full hover:bg-green-200 transition">📂 فتح ملف</button>
+                        <button id="formatBtn" class="btn-menu-light text-xs px-3 py-1 rounded-full transition">✨ تجميل</button>
+                        <button id="uploadBtn" class="btn-menu-light text-xs px-3 py-1 rounded-full transition">📂 فتح ملف</button>
                         <input type="file" id="fileUploader" accept=".html,.htm" class="hidden" />
-                        <button id="shareBtn" class="text-xs bg-amber-100 text-amber-700 px-3 py-1 rounded-full hover:bg-amber-200 transition">🔗 مشاركة</button>
-                        <button id="fullscreenEditorBtn" class="text-xs bg-gray-200 text-gray-700 px-3 py-1 rounded-full hover:bg-gray-300 transition">🖥️ ملء المحرر</button>
+                        <button id="shareBtn" class="btn-menu-light text-xs px-3 py-1 rounded-full transition">🔗 مشاركة</button>
+                        <button id="fullscreenEditorBtn" class="btn-menu-light text-xs px-3 py-1 rounded-full transition">🖥️ ملء المحرر</button>
                     </div>
                 </div>
                 <div class="p-2 flex-1">
                     <textarea id="htmlEditor" class="w-full h-full hidden"></textarea>
                 </div>
-                <div class="status-bar border-t p-2 flex justify-between text-gray-500 text-xs bg-gray-50">
-                    <span id="stats">⬅️ أسطر: 0 | أحرف: 0</span>
+                <div class="status-bar border-t p-2 flex justify-between text-xs">
+                    <span id="stats">📊 أسطر: 0 | أحرف: 0</span>
                     <span>💾 حفظ تلقائي</span>
                 </div>
             </div>
             <div class="flex flex-wrap gap-3 items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <label class="text-sm font-medium">📄 اسم الملف:</label>
-                    <input type="text" id="filename" value="index.html" class="border rounded-xl px-3 py-1 text-sm w-40">
+                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">📄 اسم الملف:</label>
+                    <input type="text" id="filename" value="index.html" class="border rounded-xl px-3 py-1 text-sm w-40 focus:ring-2 focus:ring-indigo-400 outline-none">
                 </div>
                 <div class="flex gap-2">
-                    <button id="downloadBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-xl text-sm shadow flex items-center gap-1">⬇️ تحميل</button>
-                    <button id="clearEditorBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-1.5 rounded-xl text-sm">🗑️ مسح</button>
+                    <button id="downloadBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-xl text-sm shadow flex items-center gap-1 transition">⬇️ تحميل</button>
+                    <button id="clearEditorBtn" class="btn-clear-light px-4 py-1.5 rounded-xl text-sm transition">🗑️ مسح</button>
                 </div>
             </div>
         </div>
 
-        <!-- الجانب الأيمن: معاينة مع أزرار تحكم -->
+        <!-- الجانب الأيمن: معاينة -->
         <div class="flex-1 flex flex-col gap-3">
             <div class="bg-white rounded-2xl shadow-lg border overflow-hidden flex flex-col h-full">
                 <div class="flex justify-between items-center px-4 py-2 border-b bg-gray-50/50">
-                    <span class="text-sm font-medium">🔍 معاينة مباشرة</span>
-                    <button id="fullscreenPreviewBtn" class="text-xs bg-gray-200 px-3 py-1 rounded-full hover:bg-gray-300">🖥️ ملء المعاينة</button>
+                    <span class="text-sm font-medium text-gray-700">🔍 معاينة مباشرة</span>
+                    <button id="fullscreenPreviewBtn" class="btn-menu-light text-xs px-3 py-1 rounded-full transition">🖥️ ملء المعاينة</button>
                 </div>
                 <div class="preview-panel p-2 bg-gray-100 flex-1" style="min-height: 500px;">
                     <iframe id="previewFrame" title="Live Preview" class="w-full h-full rounded-xl shadow-inner" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"></iframe>
                 </div>
-                <div class="p-1 text-center text-xs text-gray-400">معاينة فورية (مع تأخير بسيط لتحسين الأداء)</div>
+                <div class="p-1 text-center text-xs text-gray-400 border-t">معاينة فورية (مع تأخير بسيط لتحسين الأداء)</div>
             </div>
         </div>
     </div>
@@ -131,7 +202,6 @@
         const darkModeToggle = document.getElementById('darkModeToggle');
         const statsSpan = document.getElementById('stats');
 
-        // --- البيانات الأساسية ---
         let editor = null;
         let updateTimeout = null;
         const STORAGE_KEY = 'html_editor_content';
@@ -142,7 +212,6 @@
 </head>
 <body><div class=\"card\"><h1>✨ المحرر المتكامل</h1><p>حفظ تلقائي، تنسيق، فتح ملف، مشاركة، ملء الشاشة.</p><button>ابدأ الآن</button></div></body></html>`;
 
-        // --- تهيئة CodeMirror ---
         function initEditor(){
             editor = CodeMirror.fromTextArea(textarea, {
                 mode: "htmlmixed",
@@ -155,13 +224,9 @@
                 indentUnit: 2,
                 tabSize: 2
             });
-            // استرجاع من localStorage
             const saved = localStorage.getItem(STORAGE_KEY);
-            if(saved && saved.trim() !== ""){
-                editor.setValue(saved);
-            } else {
-                editor.setValue(defaultHTML);
-            }
+            if(saved && saved.trim() !== "") editor.setValue(saved);
+            else editor.setValue(defaultHTML);
             updatePreviewDebounced();
             updateStats();
             editor.on("change", () => {
@@ -172,7 +237,6 @@
             });
         }
 
-        // --- تحديث المعاينة مع debounce (تحسين الأداء) ---
         function updatePreviewNow(){
             let code = editor.getValue();
             if(!code.trim()){
@@ -186,12 +250,9 @@
 
         function updatePreviewDebounced(){
             if(updateTimeout) clearTimeout(updateTimeout);
-            updateTimeout = setTimeout(() => {
-                updatePreviewNow();
-            }, 300);
+            updateTimeout = setTimeout(() => updatePreviewNow(), 300);
         }
 
-        // --- إحصائيات (أسطر + أحرف) ---
         function updateStats(){
             const content = editor.getValue();
             const lines = content.split(/\r?\n/).length;
@@ -199,10 +260,8 @@
             statsSpan.innerText = `📊 أسطر: ${lines} | أحرف: ${chars}`;
         }
 
-        // --- تنسيق الكود (Prettify بسيط) ---
         function formatHTML(html){
-            let formatted = '';
-            let indent = 0;
+            let formatted = '', indent = 0;
             const tab = '  ';
             html = html.replace(/>\s*</g, '>\n<');
             const lines = html.split('\n');
@@ -216,28 +275,23 @@
         }
 
         function prettifyCode(){
-            const raw = editor.getValue();
-            const pretty = formatHTML(raw);
+            const pretty = formatHTML(editor.getValue());
             editor.setValue(pretty);
             showToast("✨ تم تنسيق الكود", 1500);
         }
 
-        // --- مشاركة الكود عبر الرابط (hash) ---
         function shareCode(){
-            const code = editor.getValue();
-            const encoded = encodeURIComponent(code);
+            const encoded = encodeURIComponent(editor.getValue());
             const newUrl = window.location.pathname + '#' + encoded;
             window.history.pushState({}, '', newUrl);
             navigator.clipboard.writeText(window.location.href);
             showToast("🔗 تم نسخ الرابط مع الكود المشفر", 2000);
         }
 
-        // --- استعادة الكود من الرابط عند التحميل ---
         function loadFromHash(){
             if(window.location.hash && window.location.hash.length > 1){
                 try{
-                    const encoded = window.location.hash.substring(1);
-                    const decoded = decodeURIComponent(encoded);
+                    const decoded = decodeURIComponent(window.location.hash.substring(1));
                     if(decoded && decoded.trim() !== ""){
                         editor.setValue(decoded);
                         localStorage.setItem(STORAGE_KEY, decoded);
@@ -247,15 +301,12 @@
             }
         }
 
-        // --- فتح ملف محلي ---
-        function openLocalFile(){
-            fileUploader.click();
-        }
+        function openLocalFile(){ fileUploader.click(); }
         function handleFileUpload(e){
             const file = e.target.files[0];
             if(!file) return;
             const reader = new FileReader();
-            reader.onload = function(ev){
+            reader.onload = ev => {
                 editor.setValue(ev.target.result);
                 localStorage.setItem(STORAGE_KEY, ev.target.result);
                 showToast(`📂 تم فتح ${file.name}`, 1500);
@@ -264,7 +315,6 @@
             fileUploader.value = '';
         }
 
-        // --- تحميل الملف إلى الجهاز ---
         function downloadHTML(){
             let filename = filenameInput.value.trim();
             if(!filename) filename = "index.html";
@@ -278,7 +328,6 @@
             showToast("✅ تم تحميل الملف", 1200);
         }
 
-        // --- مسح المحرر ---
         function clearEditor(){
             if(confirm("⚠️ هل أنت متأكد من مسح كل الكود؟")){
                 editor.setValue("");
@@ -286,22 +335,18 @@
             }
         }
 
-        // --- ملء الشاشة باستخدام screenfull ---
         function toggleFullscreen(element){
-            if(screenfull.isEnabled){
-                screenfull.toggle(element);
-            }
+            if(screenfull.isEnabled) screenfull.toggle(element);
         }
 
-        // --- إشعارات علوية (toast) ---
         function showToast(msg, duration=1500){
             const toast = document.getElementById('toastMessage');
             toast.innerText = msg;
             toast.style.opacity = '1';
-            setTimeout(() => { toast.style.opacity = '0'; }, duration);
+            setTimeout(() => toast.style.opacity = '0', duration);
         }
 
-        // --- الوضع المظلم ---
+        // الوضع المظلم المحسن
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         let isDarkMode = localStorage.getItem('themeMode') === 'dark' || (localStorage.getItem('themeMode') === null && prefersDark);
         function applyDarkMode(enable){
@@ -316,29 +361,17 @@
             }
             localStorage.setItem('themeMode', enable ? 'dark' : 'light');
         }
-        
-        // --- اختصارات لوحة المفاتيح ---
+
         function setupShortcuts(){
             window.addEventListener('keydown', (e) => {
-                if(e.ctrlKey && e.shiftKey && e.key === 'F'){
-                    e.preventDefault(); prettifyCode();
-                }
-                if(e.ctrlKey && e.shiftKey && e.key === 'U'){
-                    e.preventDefault(); openLocalFile();
-                }
-                if(e.ctrlKey && e.shiftKey && e.key === 'S'){
-                    e.preventDefault(); downloadHTML();
-                }
-                if(e.ctrlKey && e.shiftKey && e.key === 'E'){
-                    e.preventDefault(); clearEditor();
-                }
-                if(e.ctrlKey && e.shiftKey && e.key === 'L'){
-                    e.preventDefault(); toggleFullscreen(document.querySelector('.flex-1').parentElement.parentElement);
-                }
+                if(e.ctrlKey && e.shiftKey && e.key === 'F'){ e.preventDefault(); prettifyCode(); }
+                if(e.ctrlKey && e.shiftKey && e.key === 'U'){ e.preventDefault(); openLocalFile(); }
+                if(e.ctrlKey && e.shiftKey && e.key === 'S'){ e.preventDefault(); downloadHTML(); }
+                if(e.ctrlKey && e.shiftKey && e.key === 'E'){ e.preventDefault(); clearEditor(); }
+                if(e.ctrlKey && e.shiftKey && e.key === 'L'){ e.preventDefault(); toggleFullscreen(document.querySelector('.flex-1').parentElement.parentElement); }
             });
         }
 
-        // --- ربط الأحداث ---
         function bindEvents(){
             downloadBtn.addEventListener('click', downloadHTML);
             clearBtn.addEventListener('click', clearEditor);
@@ -352,12 +385,11 @@
             window.addEventListener('resize', () => editor.refresh());
         }
 
-        // --- بدء التشغيل ---
         initEditor();
         bindEvents();
         setupShortcuts();
         applyDarkMode(isDarkMode);
-        loadFromHash();  // استعادة من الرابط إن وجد
+        loadFromHash();
         updatePreviewNow();
     })();
 </script>
